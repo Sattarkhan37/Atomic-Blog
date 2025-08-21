@@ -1,4 +1,4 @@
-import { createContext, useState } from "react";
+import { createContext, useContext, useState } from "react";
 import { faker } from "@faker-js/faker";
 
 function createRandomPost() {
@@ -9,7 +9,7 @@ function createRandomPost() {
 }
 //1) Create a Context
 const PostContext = createContext();
-function PostProvider({children}) {
+function PostProvider({ children }) {
   const [posts, setPosts] = useState(() =>
     Array.from({ length: 30 }, () => createRandomPost())
   );
@@ -41,7 +41,15 @@ function PostProvider({children}) {
         searchQuery,
         setSearchQuery,
       }}
-    >{children}</PostContext.Provider>
+    >
+      {children}
+    </PostContext.Provider>
   );
 }
-export {PostProvider,PostContext} 
+function usePosts() {
+  const context = useContext(PostContext);
+  if (context === undefined)
+    throw new Error("PostContext was used outside of the PostProvder");
+  return context;
+}
+export { PostProvider, usePosts };
