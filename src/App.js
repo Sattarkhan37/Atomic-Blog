@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { createContext, useEffect, useState } from "react";
 import { faker } from "@faker-js/faker";
 
 function createRandomPost() {
@@ -7,7 +7,8 @@ function createRandomPost() {
     body: faker.hacker.phrase(),
   };
 }
-
+//1) Create a Context
+const PostContext = createContext();
 function App() {
   const [posts, setPosts] = useState(() =>
     Array.from({ length: 30 }, () => createRandomPost())
@@ -42,6 +43,14 @@ function App() {
   );
 
   return (
+    // 2)provide a value to child components
+    <PostContext.Provider value={{
+      posts:searchedPosts,
+      onClearPosts:handleClearPosts,
+      onAddPost:handleAddPost,
+      searchQuery,
+      setSearchQuery,
+          }}>
     <section>
       <button
         onClick={() => setIsFakeDark((isFakeDark) => !isFakeDark)}
@@ -60,6 +69,7 @@ function App() {
       <Archive onAddPost={handleAddPost} />
       <Footer />
     </section>
+    </PostContext.Provider>
   );
 }
 
